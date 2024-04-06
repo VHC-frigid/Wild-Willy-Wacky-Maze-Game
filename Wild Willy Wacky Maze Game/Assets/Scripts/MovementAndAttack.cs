@@ -24,14 +24,16 @@ public class MovementAndAttack : MonoBehaviour
         player = GameObject.Find("Player");
     }
 
-    void chase()
-    {
-        agent.SetDestination(player.transform.position);
-    }
-
     void Update()
     {
-        if (agent.remainingDistance <= agent.stoppingDistance) //done with path
+
+        playerInSight = Physics.CheckSphere(transform.position, sightRange, playerLayer);
+
+        if (playerInSight)
+        {
+            chase();
+        }       
+        else if (agent.remainingDistance <= agent.stoppingDistance) //done with path
         {
             Vector3 point;
             if (RandomPoint(centrePoint.position, range, out point)) //pass in our centre point and radius of area
@@ -41,11 +43,12 @@ public class MovementAndAttack : MonoBehaviour
             }
         }
 
-        playerInSight = Physics.CheckSphere(transform.position, sightRange, playerLayer); 
-        
-        chase();
-
     }
+    void chase()
+    {
+        agent.SetDestination(player.transform.position);
+    }
+
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
     {
 
